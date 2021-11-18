@@ -1,0 +1,301 @@
+<div class="row">
+  <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+      <div class="card">
+
+          <div class="card-header bg-info">
+              <h4 class="card-title mb-0 text-white">Filtros de usuarios</h4>
+          </div>
+
+          <div class="card-body">
+            <form [formGroup]="formulario" (submit)="filtrarUsuario()" id="filtroUsuario">
+              <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="control-label" for="firstName">Nombres</label>
+                        <input type="text" formControlName="nombre" id="firstName" class="form-control" placeholder="Nombre">
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                    <div class="form-group">
+                        <label class="control-label" for="documentoFiltro">Documento</label>
+                        <input type="text" formControlName="documento" id="documentoFiltro" class="form-control" placeholder="Documento de identidad">
+                    </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-12 mt-2">
+                  <button type="submit" class="btn btn-rounded btn-block btn-info">Filtrar</button>
+                  <button type="button" (click)="nuevoUsuario()"  class="btn btn-rounded btn-block btn-success">Nuevo Usuario</button>
+                </div>
+              </div>
+            </form>
+          </div>
+      </div>
+  </div>
+
+  <div class="col-lg-9">
+    <div class="card border-left border-cyan">
+      <div class="card-body">
+
+        <div class="d-flex no-block align-items-center">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="bg-info text-white">
+                <tr>
+                  <th class="text-center" scope="col">#</th>
+                  <th scope="col">Nombres</th>
+                  <th scope="col">Correo</th>
+                  <th class="text-center" scope="col">Documento</th>
+                  <th class="text-center" scope="col">Estado</th>
+                  <th class="text-center" scope="col">Opciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of listaUsuarios">
+                  <td class="text-center">{{user.idUsuario}}</td>
+                  <td>{{ user.nombre }}</td>
+                  <td>{{ user.correo }}</td>
+                  <td class="text-center">{{ user.nroDocumento }}</td>
+                  <td class="text-center"> {{ user.estado == 'A' ?  "Activo" : "Inactivo" }}</td>
+                  <td  class="text-center">
+                    <a href="javascript: void(0);" (click)="abrirModal(modalDetalleUsuario, user)" class="link mr-2"
+                      placement="top" ngbTooltip="Editar" >
+                      <i-feather name="edit-2" class="feather-sm"></i-feather>
+                    </a>
+                    <a href="javascript: void(0);" class="link" (click)="deleteUser(user.idUsuario)" placement="top"
+                      ngbTooltip="Eliminar">
+                      <i-feather name="trash-2" class="feather-sm"></i-feather>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="row d-flex justify-content-center mt-4">
+          <ngb-pagination
+              [collectionSize]="paginador.totalRegistros" [(page)]="page" [pageSize]="pageSize" [boundaryLinks]="true"
+              (pageChange)="cambioPagina($event)" [ellipses] ="false" [maxSize] = 5 [rotate] = "true" >
+          </ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalDetalleUsuario let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Información usuario</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form autocomplete="off" [formGroup]="formularioUsuario" id="detalleUsuario">
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label for="codigoUsuario" class="control-label col-form-label">Código usuario</label>
+                <input formControlName="codigoUsuario" type="number" id="codigoUsuario" class="form-control" placeholder="Autogenerado">
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label for="nombreUsuario" class="control-label col-form-label">Nombre(s)*</label>
+                <input formControlName="nombreUsuario" type="text" id="nombreUsuario" class="form-control" placeholder="Nombre(s) usuario">
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label for="apPaterno" class="control-label col-form-label">Apellido Paterno</label>
+                <input formControlName="apellidoPaterno" type="text" id="apPaterno" class="form-control" placeholder="Primer apellido">
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label for="apMaterno" class="control-label col-form-label">Apellido Materno</label>
+                <input formControlName="apellidoMaterno" type="text" id="apMaterno" class="form-control" placeholder="Segundo apellido">
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label  class="control-label col-form-label" for="tipoDocumentoUsuario">Tipo Documento</label>
+                <select formControlName="tipoDocumento" class="form-control" id="tipoDocumentoUsuario">
+                  <option selected disabled>Seleccione un tipo...</option>
+                  <option *ngFor="let documento of listaTipoDocumentos" value="{{documento.codigo}}">{{documento.abreviatura}}</option>
+              </select>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label for="nroDocumentoUsuario" class="control-label col-form-label">Número documento</label>
+                <input type="text" formControlName="nroDocumento" id="nroDocumentoUsuario" class="form-control" placeholder="Número de identidad">
+            </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label col-form-label" for="estadoUsuario">Estado</label>
+                <select formControlName="estado" class="form-control" id="estadoUsuario">
+                  <option selected disabled>Seleccione un estado..</option>
+                  <option value="A">Activo</option>
+                  <option value="I">Inactivo</option>
+              </select>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label for="correoUsuario" class="control-label col-form-label">Correo</label>
+              <input formControlName="correo" type="email" id="correoUsuario" class="form-control" placeholder="Correo electrónico">
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+                <label class="control-label col-form-label">Género</label>
+                <div class="form-control" style="border: none;">
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input formControlName="genero" type="radio" class="custom-control-input" id="generoMasculino" name="genero" value="M">
+                    <label class="custom-control-label" for="generoMasculino">Masculino</label>
+                  </div>
+                  <div class="custom-control custom-radio custom-control-inline">
+                    <input formControlName="genero" type="radio" class="custom-control-input" id="generoFeminina" name="genero" value="F">
+                    <label class="custom-control-label" for="generoFeminina">Femenina</label>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label  class="control-label col-form-label" for="nacionalidadUsuario">Nacionalidad</label>
+              <select formControlName="pais" class="form-control" id="nacionalidadUsuario">
+                <option selected disabled>Seleccione la nacionalidad</option>
+                <option *ngFor="let pais of listaPaises" value="{{pais.codigo}}">
+                    {{formularioUsuario.get('genero').value == 'M' ? pais.gentilicioMasculino: pais.gentilicioFemenino}}
+                </option>
+              </select>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <div class="form-group">
+            <label for="numeroUsuario" class="control-label col-form-label">Célular</label>
+            <input formControlName="celular" type="number" id="numeroUsuario" class="form-control" placeholder="Conctacto usuario">
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+          <div class="form-group">
+            <label for="nacimientoUsuario" class="control-label col-form-label">Fecha Nacimiento</label>
+            <input formControlName="fechaNacimiento" type="date" class="form-control" id="nacimientoUsuario">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
+          <div class="form-group">
+            <label for="motivoUsuario" class="control-label col-form-label">Motivo Inactivo</label>
+            <select formControlName="motivo" class="form-control" id="motivoUsuario">
+              <option selected> </option>
+              <option value="V">Vaciones</option>
+              <option value="C">Cese</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+          <div class="form-group">
+            <label class="control-label col-form-label">Acciones</label>
+            <div class="form-control" style="border: none;">
+              <button class="btn btn-sm btn-rounded btn-info m-0" (click)="abrirModalContrania(modalCambioCantrasenia)">
+                Cambiar contraseña
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12 col-md-12">
+          <div class="form-group">
+            <label for="rolesUsuario" class="control-label col-form-label">
+              Roles
+            </label>
+
+            <ng-multiselect-dropdown
+              [placeholder]="'Sin rol asignado'"
+              [settings]="dropdownSettings"
+              [data]="listaRoles"
+            >
+            </ng-multiselect-dropdown>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
+  </div>
+</ng-template>
+
+
+<ng-template #modalCambioCantrasenia let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Cambio de contrase&ntilde;a</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <form autocomplete="off" [formGroup]='formulariosPassword' (submit)="changePassword()">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+              <label for="contrasenia" class="control-label col-form-label col-form-label-sm">
+                Nueva contrase&ntilde;a
+              </label>
+              <input type="password" formControlName="newPassword" class="form-control form-control-sm" id="contrasenia" placeholder="Nueva Contrase&ntilde;a">
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="form-group">
+              <div class="form-group">
+                  <label for="confirmarConsenia" class="control-label col-form-label col-form-label-sm">
+                    Confirmar Contrase&ntilde;a
+                  </label>
+                  <input type="password" formControlName="repeatPassword" class="form-control form-control-sm" id="confirmarConsenia" placeholder="Repetir Contrase&ntilde;a">
+
+                  <small id="name13" class="badge badge-default badge-danger form-text text-white float-left" *ngIf="mostrarTextValidPass">
+                    Las contrase&ntilde;as no son iguales
+                  </small>
+              </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <fieldset class="checkbox">
+            <label class="control-label col-form-label col-form-label-sm">
+              <input type="checkbox" formControlName ="exigirCambioClave"> Exigir cambiar la conse&ntilde;a
+            </label>
+          </fieldset>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-rounded btn-success btn-sm">Guardar</button>
+      <button type="button" class="btn btn-rounded btn-danger btn-sm" (click)="modal.close('Cancelar')">Cancelar</button>
+    </div>
+  </form>
+</ng-template>

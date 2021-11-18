@@ -1,0 +1,226 @@
+<div class="row">
+  <div class="col-12">
+    <div class="card border-left border-dark">
+      <div class="card-body">
+        <form autocomplete="off" [formGroup]='formularioFiltro'>
+          <div class="row">
+            <div class="col-sm-12 col-lg-3 m-0">
+              <div class="form-group row d-flex align-items-center">
+                  <label for="fname2" class="col-sm-4 text-right control-label col-form-label">Periodo</label>
+                  <div class="col-sm-8">
+                    <input type="month" class="form-control form-control-sm" formControlName='periodo' (change)='ObtenerListaCandidatos(0)'>
+                  </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-lg-3 form-group m-0 d-flex align-items-center">
+              <label>
+                  <input type="checkbox" name="filtro"  formControlName='primerFiltro' (change)='ObtenerListaCandidatos(1)'> Stock por de bajo del P.C.
+              </label>
+            </div>
+            <div class="col-sm-12 col-lg-3 form-group m-0 d-flex align-items-center">
+              <label>
+                  <input type="checkbox" name="filtro" formControlName='segundoFiltro' (change)='ObtenerListaCandidatos(2)'> Stock por encima del P.C.
+              </label>
+            
+            </div>
+            <div class="col-sm-12 col-lg-3 form-group m-0 d-flex align-items-center">
+              <label>
+                  <input type="checkbox" name="filtro" formControlName='tercerFiltro' (change)='ObtenerListaCandidatos(3)'> Pedidos atrasados
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row mb-2">
+          <div class="col-4">
+            <input type="text" placeholder="Buscar por CodSut, Item o Descripción." class="form-control rounded-pill col-10" (change)="filtroCandidato($event.target.value)">
+          </div>
+          <div class="col-4 text-center">
+            <button class="btn btn-rounded btn-outline-primary" type="button" (click)="actualizarLista()">Actualizar</button>
+          </div>
+          <div class="col-4">
+            <select class="custom-select" style="float: right; width: auto" (change)="cambioPaginado($event.target.value)">
+              <option value="10">10 candidatos por página</option>
+              <option value="20">20 candidatos por página</option>
+              <option value="50">50 candidatos por página</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <ngx-datatable
+              class="material fullscreen"
+              [rows]="listaCandidatos"
+              [columnMode]="'force'"
+              [headerHeight]="50"
+              [footerHeight]="50"
+              [limit]="alertasPorPagina"
+              rowHeight="auto"
+              [scrollbarH]="true"
+              [messages]="messagerNgxTable"
+            >
+              <ngx-datatable-column name="#" prop='candidato' [width]="70"></ngx-datatable-column>
+              <ngx-datatable-column name="CodSut" prop='codSut' [width]="244"></ngx-datatable-column>
+              <ngx-datatable-column name="Item" prop='item' [width]="135"></ngx-datatable-column>
+              <ngx-datatable-column name="Descripcion" prop='descripcion' [width]="200"></ngx-datatable-column>
+              <ngx-datatable-column name="coeficienteVariacion" [width]="85">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Coef. Variación
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value }} %
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="pronostico" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Pronostico
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="limiteSuperior" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  L. Superior
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="puntoControl" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  P. Control
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="stockMax" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Máximo
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="stockEnTransito" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Transito
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  <span *ngIf="row['pedidosTransito'].length < 1">
+                    {{value | number}}
+                  </span>
+                  <button class="btn btn-sm btn-outline-primary btn-rounded" type="button" *ngIf="row['pedidosTransito'].length >= 1"
+                   (click)="abrirModalTransito(modalDetalleTransito, row['pedidosTransito'])">
+                    {{ value | number }}
+                  </button>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="stockActual" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Actual
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="stockComprometido" [width]="100">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Comprometido
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="stockDisponible" [width]="118">
+                <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+                  Disponible
+                </ng-template>
+                <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{ value | number }}
+                </ng-template>
+              </ngx-datatable-column>
+            </ngx-datatable>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalDetalleTransito let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">
+      Pedidos en tránsito
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">
+        &times;
+      </span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="table-responsive table-sm">
+      <table class="table table-striped no-wrap border mt-4">
+          <thead>
+              <tr>
+                  <th class="text-center">Pedido</th>
+                  <th class="text-center">Lote</th>
+                  <th class="text-center">Item</th>
+                  <th class="text-center">Pedida</th>
+                  <th class="text-center">Ingresada</th>
+                  <th class="text-center">Pendiente</th>
+                  <th class="text-center">Fecha</th>
+                  <th class="text-center">Dif. Días</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let pedido of pedidosItemTransito">
+                  <td class="text-center">
+                    {{ pedido['pedidoNumero'] }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['numeroLote'] }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['item'] }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['cantidadPedida'] | number }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['cantidadIngresada'] | number }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['cantidadPendiente'] | number }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['fechaPreparacion'] | date: 'dd/MM/yy hh:mm' }}
+                  </td>
+                  <td class="text-center">
+                    {{ pedido['difDias'] }}
+                  </td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>
