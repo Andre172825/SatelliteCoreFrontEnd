@@ -6,8 +6,7 @@ import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-log-pedidos-creados',
-  templateUrl: './log-pedidos-creados.component.html',
-  styleUrls: ['./log-pedidos-creados.component.css']
+  templateUrl: './log-pedidos-creados.component.html'
 })
 export class LogPedidosCreadosComponent implements OnInit {
 
@@ -36,8 +35,8 @@ export class LogPedidosCreadosComponent implements OnInit {
   reinicio = 0
 
   pagina: number = 0
-  
-  constructor(private _pronosticoService: PronosticoService, notifier: NotifierService, private _fb: FormBuilder) { 
+
+  constructor(private _pronosticoService: PronosticoService, notifier: NotifierService, private _fb: FormBuilder) {
     this.notifier = notifier
     this.crearFormulario()
   }
@@ -55,7 +54,7 @@ export class LogPedidosCreadosComponent implements OnInit {
     })
 
     this.formularioFiltro.reset({
-      fechaInicio: this.ayer, 
+      fechaInicio: this.ayer,
       fechaFin : this.hoy.toISOString().slice(0, 10),
       registroPorPagina: 10
     })
@@ -80,18 +79,18 @@ export class LogPedidosCreadosComponent implements OnInit {
       this.paginado = resp['paginado']
 
       if(this.listaPedidos.length < 1)
-        this.notifier.notify( 'info', 'No se han encontrado pedidos' ) 
+        this.notifier.notify( 'info', 'No se han encontrado pedidos' )
 
     })
   }
 
   filtrarPedido(){
-    
+
     this.notifier.hideAll()
 
-    let inicio = this.formularioFiltro.get('fechaInicio').value == null ? '' : this.formularioFiltro.get('fechaInicio').value 
-    let fin = this.formularioFiltro.get('fechaFin').value == null ? '' : this.formularioFiltro.get('fechaFin').value 
-    let itemSpring = this.formularioFiltro.get('item').value == null ? '' : this.formularioFiltro.get('item').value 
+    let inicio = this.formularioFiltro.get('fechaInicio').value == null ? '' : this.formularioFiltro.get('fechaInicio').value
+    let fin = this.formularioFiltro.get('fechaFin').value == null ? '' : this.formularioFiltro.get('fechaFin').value
+    let itemSpring = this.formularioFiltro.get('item').value == null ? '' : this.formularioFiltro.get('item').value
 
     if(inicio == "" && fin == "" && itemSpring == "")
       this.notifier.notify( 'warning', 'Ingrese algun filtro' )
@@ -107,12 +106,12 @@ export class LogPedidosCreadosComponent implements OnInit {
   cambioRegistroPorPagina (event){
 
     this.formularioFiltro.reset({
-      fechaInicio:  this.formularioFiltro.get('fechaInicio').value, 
+      fechaInicio:  this.formularioFiltro.get('fechaInicio').value,
       fechaFin :  this.formularioFiltro.get('fechaFin').value,
       item: this.formularioFiltro.get('item').value,
       registroPorPagina: event * 1
     })
-    
+
     this.filtrarPedido();
   }
 

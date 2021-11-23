@@ -18,7 +18,7 @@ export const DashboardRoutes: Routes = [
                 data: {
                 title: "Dashboard comercial pedidos",
                 urls: [
-                        { title: 'Dashboard comercial pedidos' }
+                        { title: 'Dashboard pedidos' }
                     ]
                 }
             },
@@ -28,7 +28,7 @@ export const DashboardRoutes: Routes = [
                 data: {
                 title: "Dashboard comercial ventas",
                 urls: [
-                        { title: 'Dashboard comercial ventas' }
+                        { title: 'Dashboard ventas' }
                     ]
                 }
             },
@@ -38,7 +38,7 @@ export const DashboardRoutes: Routes = [
                 data: {
                 title: "Dashboard comercial exportación",
                 urls: [
-                        { title: 'Dashboard comercial exportación' }
+                        { title: 'Dashboard exportación' }
                     ]
                 }
             },
@@ -46,7 +46,7 @@ export const DashboardRoutes: Routes = [
                 path: 'ventasInretail',
                 component: InretailComponent ,
                 data: {
-                title: "Dashboard ventas inretail",
+                title: "Dashboard comercial ventas inretail",
                 urls: [
                         { title: 'Dashboard ventas inretail' }
                     ]
@@ -56,7 +56,7 @@ export const DashboardRoutes: Routes = [
                 path: 'rentabilidad',
                 component: RentabilidadComponent ,
                 data: {
-                title: "Dashboard rentabilidad",
+                title: "Dashboard comercial rentabilidad",
                 urls: [
                         { title: 'Dashboard rentabilidad' }
                     ]
@@ -72,7 +72,7 @@ export const DashboardRoutes: Routes = [
                 path: 'pedidosArima',
                 component: PedidoArimaComponent ,
                 data: {
-                title: "Dashboard pedidos arima",
+                title: "Dashboard pruducción pedidos arima",
                 urls: [
                         { title: 'Dashboard pedidos arima' }
                     ]

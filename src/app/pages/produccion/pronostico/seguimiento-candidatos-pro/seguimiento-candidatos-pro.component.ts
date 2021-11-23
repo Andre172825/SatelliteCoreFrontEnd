@@ -1,5 +1,5 @@
 import { PronosticoService } from '@data/services/backEnd/pages/pronostico.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { SeguimientoCandidato } from '@data/interface/Response/SeguimientoCandidatos.interdace'
 import { PedidoEnTransito } from '@data/interface/Response/PedidoEnTransito.interface';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -7,8 +7,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-seguimiento-candidatos-pro',
-  templateUrl: './seguimiento-candidatos-pro.component.html',
-  styleUrls: ['./seguimiento-candidatos-pro.component.css']
+  templateUrl: './seguimiento-candidatos-pro.component.html'
 })
 export class SeguimientoCandidatosProComponent implements OnInit {
 
@@ -17,9 +16,10 @@ export class SeguimientoCandidatosProComponent implements OnInit {
   listaCandidatos: SeguimientoCandidato[]
   pedidosItemTransito : PedidoEnTransito[]
   formularioFiltro: FormGroup
-  alertasPorPagina = 10
+  flagLoading: boolean = false
+
   messagerNgxTable = {
-    'emptyMessage': 'No se ha encontrado candidatos para este filtro',
+    'emptyMessage': 'No se ha encontrado candidatos para estos filtro',
     'totalMessage': 'Candidatos'
   }
 
@@ -31,10 +31,35 @@ export class SeguimientoCandidatosProComponent implements OnInit {
     this.ObtenerListaCandidatos(0);
   }
 
+  crearFormulario(){
+    this.formularioFiltro =  this._fb.group({
+      periodo: ['', Validators.required],
+      primerFiltro: [false],
+      segundoFiltro: [false],
+      tercerFiltro: [false],
+      regla: [''],
+      agrupador: [''],
+      textFilter: ['']
+    })
+
+    this.formularioFiltro.reset({
+      periodo: this._periodoActual,
+      primerFiltro: false,
+      segundoFiltro: false,
+      tercerFiltro: false,
+      regla: 'R1',
+      agrupador: '',
+      textFilter: ''
+    })
+
+  }
+
   ObtenerListaCandidatos (filtro: number){
 
     if(this.formularioFiltro.valid)
     {
+      this.messagerNgxTable.emptyMessage = "No se ha encontrado candidatos para estos filtro"
+      this.flagLoading = true
 
       this.desactivarCheckbox(filtro)
 
@@ -44,22 +69,25 @@ export class SeguimientoCandidatosProComponent implements OnInit {
         'segundoFiltro': this.formularioFiltro.get('segundoFiltro').value,
         'tercerFiltro': this.formularioFiltro.get('tercerFiltro').value
       }
-  
+
       this.listaCandidatos = []
-  
+
       if(body['primerFiltro'] == true || body['segundoFiltro'] == true || body['tercerFiltro'] == true)
         body.periodo = this._periodoActual
-  
+
       this._pronosticoService.ListSeguimientoCandidatos(body).subscribe(
         resp => {
-          this.listaCandidatos =  resp
           this.dataCompleta = resp
+          this.filtrarFormulario()
+          this.flagLoading = false
+        },
+        catchError => {
+          this.flagLoading = false
+          this.messagerNgxTable.emptyMessage = "Ocurrio un error al obtener los candidatos"
         }
       )
     }
-    
   }
-
 
   desactivarCheckbox(filtro: number){
 
@@ -96,43 +124,6 @@ export class SeguimientoCandidatosProComponent implements OnInit {
         segundoFiltro: false,
       })
     }
-
-
-
-  }
-
-  crearFormulario(){
-    this.formularioFiltro =  this._fb.group({
-      periodo: ['', Validators.required],
-      primerFiltro: [false],
-      segundoFiltro: [false],
-      tercerFiltro: [false]
-    })
-
-    this.formularioFiltro.reset({
-      periodo: this._periodoActual,
-      primerFiltro: false,
-      segundoFiltro: false,
-      tercerFiltro: false
-    })
-
-  }
-
-  actualizarLista(){
-    this.ObtenerListaCandidatos(0)
-  }
-
-  cambioPaginado (event){
-    this.alertasPorPagina = event
-  }
-
-  filtroCandidato(event){
-    this.listaCandidatos = this.filter(event)
-  }
-
-  filter(v: string) {
-    return this.dataCompleta.filter(x => x.codSut?.toLowerCase().indexOf(v.toLowerCase()) !== -1 ||
-      x.item?.toLowerCase().indexOf(v.toLowerCase()) !== -1 || x.descripcion?.toLowerCase().indexOf(v.toLowerCase()) !== -1);
   }
 
   abrirModalTransito(modal: NgbModal, detalle){
@@ -146,5 +137,37 @@ export class SeguimientoCandidatosProComponent implements OnInit {
     });
   }
 
+  filtrarFormulario() {
+    this.flagLoading = true
+    this.listaCandidatos = []
+
+    if (this.formularioFiltro.get('regla').value != '')
+      this.listaCandidatos = this.dataCompleta.filter(x => x.regla.slice(-2) == this.formularioFiltro.get('regla').value)
+    else
+      this.listaCandidatos = this.dataCompleta
+
+    if (this.formularioFiltro.get('agrupador').value != ''){
+      let cantidadCaracteres = 7
+      switch (this.formularioFiltro.get('agrupador').value){
+        case 'SU':  cantidadCaracteres = 4
+          break;
+        case 'XTER':  cantidadCaracteres = 6
+          break;
+      }
+      this.listaCandidatos = this.listaCandidatos.filter(x => x.regla.substring(2, cantidadCaracteres) == this.formularioFiltro.get('agrupador').value)
+    }
+
+    if (this.formularioFiltro.get('textFilter').value != ''){
+      let valor =  this.formularioFiltro.get('textFilter').value.toLowerCase()
+
+      this.listaCandidatos = this.listaCandidatos.filter(
+        x => x.codSut?.toLowerCase().indexOf(valor) !== -1
+          || x.item?.toLowerCase().indexOf(valor) !== -1
+          || x.descripcion?.toLowerCase().indexOf(valor) !== -1
+      );
+    }
+
+    this.flagLoading = false
+  }
 
 }

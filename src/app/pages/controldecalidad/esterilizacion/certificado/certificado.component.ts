@@ -1,19 +1,15 @@
-//import { RolData } from '@data/interface/Response/RolData.interface';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-//import { UsuarioData } from '@data/interface/Request/Usuario.interface';
 import { CertificadoData } from '@data/interface/Request/Certificado.interface';
 import { LoteData } from '@data/interface/Request/Lote.interface';
-//import { UsuarioService } from '@data/services/backEnd/pages/usuario.service';
 import { EsterilizacionService } from '@data/services/backEnd/pages/esterilizacion.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Paginado } from '@data/interface/Comodin/Paginado.interface';
-import { ModalDismissReasons, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GenericoService } from '@shared/services/comunes/generico.service';
-// import { TipoDocumentoIdentidad } from '@data/interface/Request/TipoDocumentoIdentidad.interface';
-// import { Pais } from '@data/interface/Request/Pais.interface';
 import { DatePipe } from '@angular/common';
 import { CryptoService } from '@shared/services/comunes/crypto.service';
 import { saveAs } from 'file-saver'
+
 @Component({
   selector: 'app-certificado',
   templateUrl: './certificado.component.html',
@@ -31,11 +27,6 @@ export class CertificadoComponent implements OnInit {
   listaCertificados: CertificadoData[] = []
   listaLotes: LoteData[] = []
   loteMaestro: boolean = true;
-
-  
-
-
-  
 
   //Variables de paginación
   paginador: Paginado = {
@@ -59,10 +50,10 @@ export class CertificadoComponent implements OnInit {
       private genericoServices: GenericoService, private datePipe: DatePipe, private _cryptoService: CryptoService,)
   {
     this.crearFormulario();
-    
+
   }
 
-  
+
 
   ngOnInit(): void {
 
@@ -167,8 +158,8 @@ export class CertificadoComponent implements OnInit {
 
   nuevoCertificado(){
 
-    //if(this.formularioCertificado.valid){  
-          
+    //if(this.formularioCertificado.valid){
+
     var DropdownList  = document.getElementById("equipo") as HTMLSelectElement;
     var textoEquipo = DropdownList.options[DropdownList.selectedIndex].text;
     const body = {
@@ -182,12 +173,12 @@ export class CertificadoComponent implements OnInit {
       Cantidad: this.formularioCertificado.get('cantidad').value,
       Equipo: textoEquipo,
       UnidadMedida: "und",
-      Estado: "A",            
+      Estado: "A",
       FechaInicio: this.formularioCertificado.get('fechaInicio').value,
       FechaTermino: this.formularioCertificado.get('fechaTermino').value,
       Metodo: this.formularioCertificado.get('metodoEsterilizacion').value,
       Temperatura: this.formularioCertificado.get('temperaturaProceso').value,
-      TiempoAireacion: this.formularioCertificado.get('tiempoAireacion').value,            
+      TiempoAireacion: this.formularioCertificado.get('tiempoAireacion').value,
       TiempoExposicion: this.formularioCertificado.get('tiempoExposicion').value,
       HRProceso: this.formularioCertificado.get('hrProceso').value,
       Observaciones: this.formularioCertificado.get('observacion').value,
@@ -199,7 +190,7 @@ export class CertificadoComponent implements OnInit {
       ConformeIndicadorQuimico: this.formularioCertificado.get('resultado_22').value == "C" ? true : false,
       ModeloTrazasOE: this.formularioCertificado.get('modelo_23').value,
       CodigoTrazasOE: this.formularioCertificado.get('codigo_23').value,
-      ConformeTrazasOE: this.formularioCertificado.get('resultado_23').value == "C" ? true : false,            
+      ConformeTrazasOE: this.formularioCertificado.get('resultado_23').value == "C" ? true : false,
       TipoIB: this.formularioCertificado.get('tipo_24').value,
       CodigoIB: this.formularioCertificado.get('iaCodigo_24').value,
       //IDLoteIB: parseInt(this.formularioCertificado.get('loteId_24').value),
@@ -209,7 +200,7 @@ export class CertificadoComponent implements OnInit {
 
       IBExpuestos: this.formularioCertificado.get('ibExpuestos_24').value,
       IBExpuestosResultado: this.formularioCertificado.get('ibExpuestosResultado_24').value == "N" ? false : true,
-      IBNoExpuestos: this.formularioCertificado.get('ibNoExpuestos_24').value,            
+      IBNoExpuestos: this.formularioCertificado.get('ibNoExpuestos_24').value,
       IBNoExpuestosResultado: this.formularioCertificado.get('ibNoExpuestosResultado_24').value == "N" ? false : true,
       ConformeIB: this.formularioCertificado.get('conclusion_24').value == "C" ? true : false
     };
@@ -217,7 +208,7 @@ export class CertificadoComponent implements OnInit {
 
     });
     this.modalCertificado.close();
-        
+
       //}
   }
 
@@ -270,7 +261,7 @@ export class CertificadoComponent implements OnInit {
   abrirModalLote(modal: NgbModal, identificador){
     this.formularioLote.reset();
     this.formularioLote.patchValue({identificador : identificador});
-    this.modalLote = 
+    this.modalLote =
     this.modalService.open(modal, {
       centered: true,
       backdrop: 'static',
@@ -281,11 +272,11 @@ export class CertificadoComponent implements OnInit {
   }
   CambioIB(e){
     if(e.value == "C"){
-      this.formularioCertificado.patchValue({ iaCodigo_24 : "CCIC-08" 
+      this.formularioCertificado.patchValue({ iaCodigo_24 : "CCIC-08"
                                               ,descripcion_24 : "Bionova - BT10" })
     }
     if(e.value == "L"){
-      this.formularioCertificado.patchValue({ iaCodigo_24 : "CCIC-09" 
+      this.formularioCertificado.patchValue({ iaCodigo_24 : "CCIC-09"
                                               ,descripcion_24 : "Bionova - BT110" })
     }
   }
@@ -298,7 +289,7 @@ export class CertificadoComponent implements OnInit {
 
     this._esterilizacionService.ListarLotes(body).subscribe( resp => {
       this.listaLotes = resp['contenido'];
-      this.paginador = resp['paginado'];      
+      this.paginador = resp['paginado'];
     });
   }
 
@@ -314,7 +305,7 @@ export class CertificadoComponent implements OnInit {
       Expira: this.formularioLoteDetalle.get('expiraDetalleLote').value,
     }
 
-    this._esterilizacionService.RegistrarLote(body).subscribe( resp => {           
+    this._esterilizacionService.RegistrarLote(body).subscribe( resp => {
     });
     this.CerrarDetalle();
     this.FiltrarLotes();
@@ -350,7 +341,7 @@ export class CertificadoComponent implements OnInit {
   }
 
   abrirModal(modal: NgbModal, usuario: CertificadoData | null){
-    
+
     this.formularioCertificado.reset();
     var ultimoCertificado = this.listaCertificados.pop();
 
@@ -362,21 +353,21 @@ export class CertificadoComponent implements OnInit {
       var descripcion22 = "";
       var lote22 = "";
       var expira22 = "";
-    }else{      
+    }else{
       var descripcion21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).descripcion;
       var lote21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).lote;
       var expira21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).expira;
       var id21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).id;
-  
+
       var descripcion22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).descripcion;
       var lote22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).lote;
       var expira22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).expira;
       var id22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).id;
     }
 
-    this.formularioCertificado.patchValue({ resultado_21 : "C" 
-                                            ,resultado_22 : "C" 
-                                            ,resultado_23 : "C" 
+    this.formularioCertificado.patchValue({ resultado_21 : "C"
+                                            ,resultado_22 : "C"
+                                            ,resultado_23 : "C"
                                             ,conclusion_24 : "C"
                                             ,ibExpuestosResultado_24 : "N"
                                             ,ibNoExpuestosResultado_24 : "P"
@@ -388,7 +379,7 @@ export class CertificadoComponent implements OnInit {
                                             ,expira_22: expira22
                                             ,loteId_21: id21
                                             ,loteId_22: id22});
-    this.modalCertificado = 
+    this.modalCertificado =
     this.modalService.open(modal, {
       centered: true,
       backdrop: 'static',

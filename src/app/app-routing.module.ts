@@ -2,8 +2,6 @@ import { FullComponent } from '@layout/full/full.component';
 import { Routes } from '@angular/router';
 import { BlankComponent } from '@layout/blank/blank.component';
 
-
-// Los PATH tienen que con Mayuscula
 export const AppRoutes: Routes = [
   {
     path: '',
@@ -23,20 +21,20 @@ export const AppRoutes: Routes = [
         loadChildren:() => import('@pages/administracion/administracion.module').then(m => m.AdministracionModule)
       },
       {
-        path:'Pronostico',
-        loadChildren:() => import('@pages/produccion/pronostico/pronostico.module').then(m => m.PronosticoModule)
+        path:'Produccion',
+        loadChildren:() => import('@pages/produccion/produccion.module').then(m => m.ProduccionModule)
       },
       {
-        path:'Esterilizacion',
-        loadChildren:() => import('@pages/controldecalidad/esterilizacion/esterilizacion.module').then(m => m.EsterilizacionModule)
+        path:'ControlCalidad',
+        loadChildren:() => import('@pages/controldecalidad/esterilizacion/control-calidad.module').then(m => m.ControlCalidadModule)
       },
       {
         path:'Dashboard',
         loadChildren:() => import('@pages/dashboard/dashboard.module').then(m => m.DashboardModule)
       },
       {
-        path:'Cotizaciones',
-        loadChildren:() => import('@pages/comercial/cotizaciones/cotizaciones.module').then(m => m.CotizacionesModule)
+        path:'Comercial',
+        loadChildren:() => import('@pages/comercial/comercial.module').then(m => m.ComercialModule)
       }
     ]
   },

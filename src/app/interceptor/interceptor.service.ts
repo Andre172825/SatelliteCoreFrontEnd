@@ -38,7 +38,11 @@ export class InterceptorService implements HttpInterceptor {
       'produccion/ListarAlertasStockItem',
       'Pronostico/SegimientoCandidatos',
       'Pronostico/SegimientoCandidatosMP',
-      'Pronostico/ListaPedidosCreadoAuto'
+      'Pronostico/ListaPedidosCreadoAuto',
+      'Comercial/ListarCotizaciones',
+      'Comercial/GenerarReporteCotizacion',
+      'Comercial/ObtenerEstructuraFormato',
+      'Comercial/RegistrarRespuestas'
     ];
     const data = this.sesionService.datosPersonales();
 
@@ -63,7 +67,7 @@ export class InterceptorService implements HttpInterceptor {
       catchError((err: HttpErrorResponse) => {
 
         if (err.status === 401){
-          
+
           if(err.error.message == 'Correo o contraseña incorrecta.'){
             this.toastr.warning(err.error.message, 'Error de Autenticar!');
             return throwError( err )

@@ -9,7 +9,7 @@ import { catchError } from 'rxjs/operators';
 })
 
 export class CotizacionService{
-    private url = environment.urlApiSatelliteCore + "/api/comercial/";
+    private url = environment.urlApiSatelliteCore + "/api/Comercial/";
     constructor(private _http: HttpClient) { }
 
     ListarCotizaciones(body){
@@ -17,7 +17,7 @@ export class CotizacionService{
             catchError(() => throwError("Error al registrar el reporte"))
         )
     }
-      
+
     GenerarReporteCotizacion(body){
         return this._http.post(this.url + "GenerarReporteCotizacion", body).pipe(
             catchError(() => throwError("Error al registrar el reporte"))

@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 
-import { EsterilizacionRoutes } from './esterilizacion.routing';
+import { ControlCalidadRoutes } from './control-calidad.routing';
 
 import { ComponenteModule } from '@shared/components/componente.module';
 
@@ -18,7 +18,7 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     CertificadoComponent
   ],
   imports: [
-    RouterModule.forChild(EsterilizacionRoutes),
+    RouterModule.forChild(ControlCalidadRoutes),
     CommonModule,
     FeatherModule,
     ComponenteModule,
@@ -35,4 +35,4 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
   ]
 })
 
-export class EsterilizacionModule { }
+export class ControlCalidadModule { }

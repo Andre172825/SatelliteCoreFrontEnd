@@ -2,9 +2,9 @@ import { CertificadoComponent } from '@pages/controldecalidad/esterilizacion/cer
 import { Routes } from "@angular/router";
 import { AuthGuard } from "@guard/auth.guard";
 
-export const EsterilizacionRoutes: Routes = [
+export const ControlCalidadRoutes: Routes = [
   {
-    path: '',
+    path: 'esterilizacion',
     canActivate: [AuthGuard],
     children : [
       {

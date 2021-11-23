@@ -15,15 +15,18 @@
         <li class="sidebar-item" [class.active]="showMenu === sidebarnavItem.titulo" *ngFor="let sidebarnavItem of sidebarnavItems"
             (click)="sidebarnavItem.subMenu.length != 0 ? '' : handleNotify()"
             [routerLinkActive]="sidebarnavItem.subMenu.length != 0 ? '' : 'active'">
-            <div class="nav-small-cap" *ngIf="sidebarnavItem.extraLink === true"><i
-                    [ngClass]="[sidebarnavItem.icono]"></i><span
-                    class="hide-menu">{{sidebarnavItem.titulo}}</span></div>
+
+            <!-- <div class="nav-small-cap" *ngIf="sidebarnavItem.extraLink === true">
+              <i [ngClass]="[sidebarnavItem.icono]"></i>
+              <span class="hide-menu">{{sidebarnavItem.titulo}}</span>
+            </div> -->
+
             <a class="sidebar-link waves-effect waves-dark"
                 [routerLink]="sidebarnavItem.clase === '' ? [sidebarnavItem.ruta] : null"
                 [ngClass]="[sidebarnavItem.clase]" *ngIf="!sidebarnavItem.extraLink;"
                 (click)="addExpandClass(sidebarnavItem.titulo)"
                 [routerLinkActive]="sidebarnavItem.subMenu.length != 0 ? '' : 'active'">
-                <!-- <i [ngClass]="[sidebarnavItem.icono]"></i> -->
+                <!-- <i Class="fal fa-address-book"></i> -->
                 <i-feather [name]="sidebarnavItem.icono" [ngClass]="[sidebarnavItem.icono]"></i-feather>
                 <span class="hide-menu">{{sidebarnavItem.titulo}}
                       <span *ngIf="sidebarnavItem.subMenu.length > 0 " [ngClass]="sidebarnavItem.claseEtiqueta">
@@ -31,13 +34,16 @@
                       </span>
                 </span>
             </a>
+
             <!-- Second level menu -->
             <ul aria-expanded="false" class="collapse first-level" *ngIf="sidebarnavItem.subMenu.length > 0"
                 [ngClass]="{'in' : showMenu === sidebarnavItem.titulo }">
+
                 <li class="sidebar-item" *ngFor="let sidebarnavSubItem of sidebarnavItem.subMenu"
-                (click)="sidebarnavSubItem.subMenu.length != 0 ? '' : handleNotify()"
+                    (click)="sidebarnavSubItem.subMenu.length != 0 ? '' : handleNotify()"
                     [class.active]="showSubMenu === sidebarnavSubItem.titulo"
                     [routerLinkActive]="sidebarnavSubItem.subMenu.length > 0 ? '' : 'active'">
+
                     <a class="sidebar-link"
                         [routerLink]="sidebarnavSubItem.subMenu.length > 0 ? null : [sidebarnavSubItem.ruta]"
                         [routerLinkActive]="sidebarnavSubItem.subMenu.length > 0 ? '' : 'router-link-active'"
@@ -46,6 +52,7 @@
                         <i [ngClass]="[sidebarnavSubItem.icono]"></i>
                         <span class="hide-menu">{{sidebarnavSubItem.titulo}}</span>
                     </a>
+
                     <!-- Third level menu -->
                     <ul aria-expanded="false" class="collapse Second-level" *ngIf="sidebarnavSubItem.subMenu.length > 0"
                         [ngClass]="{'in' : showSubMenu === sidebarnavSubItem.titulo }">
@@ -59,6 +66,7 @@
                             </a>
                         </li>
                     </ul>
+
                 </li>
             </ul>
         </li>

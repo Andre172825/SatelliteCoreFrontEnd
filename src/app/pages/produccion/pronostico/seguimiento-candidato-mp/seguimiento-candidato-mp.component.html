@@ -2,33 +2,40 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
+        <form autocomplete="off" [formGroup]='formularioFiltro'>
           <div class="row mb-2">
             <div class="col-4">
-              <select class="custom-select btn-rounded col-9" style="float: left" (change)="cambioRegla($event.target.value)" #selectRegla>
+              <select class="custom-select btn-rounded col-9" formControlName="regla" style="float: left"
+                (change)="obtenerListaCandidatosMP()" #selectRegla>
                 <option value="MPAGAR1">MP Agujas Arima Regla 1</option>
                 <option value="MPAG0R2">MP Agujas Promedio Regla 2</option>
                 <option value="MPAG0R3">MP Agujas Regla 3</option>
               </select>
             </div>
             <div class="col-4 text-center">
-              <button class="btn btn-rounded btn-outline-primary" type="button" (click)="ActualizarLista(selectRegla.value)" >Actualizar</button>
+              <button class="btn btn-rounded btn-outline-primary" type="button" (click)="obtenerListaCandidatosMP()">
+                Actualizar
+              </button>
             </div>
             <div class="col-4">
-              <input type="text" style="float: right" placeholder="Buscar Item o Descripción." class="form-control rounded-pill col-8" (change)="filtroCandidato($event.target.value)">  
+              <input type="text" style="float: right" formControlName='textFilter' placeholder="Buscar Item o Descripción."
+                  class="form-control rounded-pill col-8" (keyup)="filtroCandidato()">
             </div>
           </div>
-  
+        </form>
+
           <div class="row">
-            <div class="col-12">
-              <ngx-datatable
-                class="material fullscreen"
+            <div class="col-12" style="height: 78vh;">
+              <ngx-datatable style="height: 100%;"
+                class="material"
+                [loadingIndicator]="flagLoading"
                 [rows]="listaCandidatos"
                 [columnMode]="'force'"
                 [headerHeight]="50"
                 [footerHeight]="50"
-                [limit]="15"
-                rowHeight="auto"
+                [rowHeight]="50"
                 [scrollbarH]="true"
+                [scrollbarV]="true"
                 [messages]="messagerNgxTable"
               >
                 <ngx-datatable-column name="#" prop='candidato' [width]="60"></ngx-datatable-column>
@@ -138,7 +145,7 @@
   <div class="modal-body">
     <p class="text-info">ITEM: {{itemModal}} - {{descripcionModal}}</p>
     <div class="table-responsive table-sm">
-      <table class="table table-striped no-wrap border mt-4">
+      <table class="table table-striped no-wrap border mt-4" style="font-size: 13px;">
           <thead>
               <tr>
                   <th class="text-center">Nro Orden</th>
@@ -194,8 +201,8 @@
   </div>
   <div class="modal-body">
     <p class="text-info">ITEM: {{itemModal}} - {{descripcionModal}}</p>
-    <div class="table-responsive table-sm">
-      <table class="table table-striped no-wrap border mt-4">
+    <div class="table-responsive table-sm" >
+      <table class="table table-striped no-wrap border mt-4" style="font-size: 13px;" >
           <thead>
               <tr>
                   <th class="text-center">Nro. Lote</th>

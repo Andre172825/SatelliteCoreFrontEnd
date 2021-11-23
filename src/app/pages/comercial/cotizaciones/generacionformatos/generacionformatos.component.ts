@@ -1,27 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
 import { CotizacionData } from '@data/interface/Request/Cotizacion.interface';
 import { CotizacionService } from '@data/services/backEnd/pages/cotizacion.service';
 import { Paginado } from '@data/interface/Comodin/Paginado.interface';
-import { DatePipe } from '@angular/common';
-import { CryptoService } from '@shared/services/comunes/crypto.service';
-import { GenericoService } from '@shared/services/comunes/generico.service';
-import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { saveAs } from 'file-saver'
+
 @Component({
   selector: 'app-generacionformatos',
-  templateUrl: './generacionformatos.component.html',
-  styleUrls: ['./generacionformatos.component.css']
+  templateUrl: './generacionformatos.component.html'
 })
-export class GeneracionFormatosComponent implements OnInit {
+export class GeneracionFormatosComponent {
 
   ngmNumeroDocumento : string = '';
   ngmClienteNombre : string = '';
   modalCargaReporte: any;
   _searchTerm: string='';
+
   get searchTerm(): string {
     return this._searchTerm;
   }
+
   listaCotizaciones: CotizacionData[] = []
 
   paginador: Paginado = {
@@ -43,20 +41,15 @@ export class GeneracionFormatosComponent implements OnInit {
   IdFormato: Number;
   NroDocumento: String;
   FormatoNoEncontrado: Boolean = false;
-  constructor(private modalService: NgbModal, private _cotizacionService: CotizacionService, private _fb: FormBuilder,
-    private genericoServices: GenericoService, private datePipe: DatePipe, private _cryptoService: CryptoService,)
-  {
-    
-  }
 
-  ngOnInit(): void {
-  }
+  constructor(private modalService: NgbModal, private _cotizacionService: CotizacionService)
+  {}
 
   cambioPagina(paginaCambiada: Number){
     this.pagina = paginaCambiada;
     this.filtrarCotizaciones();
   }
-  
+
   filtrarCotizaciones(){
     const body = {
       NumeroDocumento: this.ngmNumeroDocumento.trim() ,//this.formulario.get('codigoCertificado').value,
@@ -124,20 +117,25 @@ export class GeneracionFormatosComponent implements OnInit {
       this.vistaDetalle = true;
       this.IdFormato = idFormato;
       this.NroDocumento = numeroDocumento;
+
       const body = {
         IdFormato: parseInt(idFormato),
         NumeroDocumento: numeroDocumento
       }
+
       this._cotizacionService.ObtenerEstructuraFormato(body).subscribe( resp => {
         var data = resp;
         this.ConstruirDetalle(data);
-      });      
+      });
+
     }
-   }
+  }
+
   CancelEdit(){
     this.vistaDetalle = false;
   }
   ConstruirDetalle(data){
+
     var campos = data.campos;
     campos.forEach(element => {
       var divHijo = document.createElement("div");
@@ -160,7 +158,7 @@ export class GeneracionFormatosComponent implements OnInit {
       divNieto.setAttribute("class", "form-group");
       label.setAttribute("class", "control-label");
       label.htmlFor = element.identificador;
-      label.innerHTML = element.descripcionCampo;  
+      label.innerHTML = element.descripcionCampo;
       input.classList.add("form-control");
       input.type = "text";
       input.value = element.valorDefault;
@@ -168,7 +166,7 @@ export class GeneracionFormatosComponent implements OnInit {
     });
     //Contrucción de Tabla
     var cabeceras = data.cabeceras;
-    var detalle = data.data;  
+    var detalle = data.data;
 
     var tercerDiv = document.getElementById("cbTitle");
     var h4 = document.createElement("h4");
@@ -194,7 +192,7 @@ export class GeneracionFormatosComponent implements OnInit {
       th.innerHTML = element.nombreCabecera;
       trh.appendChild(th);
     });
-    
+
     var tbody = document.createElement("tbody");
     tbody.setAttribute("id", "tbodyDetalle")
     table.appendChild(tbody);
@@ -212,9 +210,11 @@ export class GeneracionFormatosComponent implements OnInit {
     });
 
   }
+
   GenerarCotizacion(modal: NgbModal){
     this.ConstruirBodyRespuestas(this.IdFormato, this.NroDocumento, modal);
   }
+
   ConstruirBodyRespuestas(IdFormato, NroDocumento, modal){
     var contenedor = document.getElementById("contenedor");
     var body = Object();
@@ -226,17 +226,19 @@ export class GeneracionFormatosComponent implements OnInit {
       obj.Respuesta = (<HTMLInputElement>element.childNodes[0].childNodes[1]).value;
       obj.IdCampo = parseInt((<HTMLSpanElement>element.childNodes[0].childNodes[2]).innerHTML);
       // console.log((<HTMLSpanElement>element.childNodes[0].childNodes[2]).innerHTML);
-      
+
       obj.TipoCampo = element.childNodes[0].childNodes[3].textContent;
       obj.CodigoRespuesta = "";
       resp.push(obj);
     });
+
     body.IdFormato = parseInt(IdFormato);
     body.NroDocumento = NroDocumento;
     body.Campos = resp;
 
     var tbody = document.getElementById("tbodyDetalle");
     var data = "";
+
     tbody.childNodes.forEach(element => {
       var trs = element.childNodes;
       trs.forEach(item => {
@@ -245,10 +247,11 @@ export class GeneracionFormatosComponent implements OnInit {
       data = data.substring(0, data.length - 1);
       data = data + "|"
     });
+
     let caracter = /<br>/gi;
     var DataFinal = data.substring(0, data.length - 1);
     body.Detalle = DataFinal.replace(caracter, '');
-    
+
     this._cotizacionService.RegistrarRespuestas(body).subscribe( resp => {
       this.GenerarReporte(NroDocumento, IdFormato, modal)
       this.CancelEdit();

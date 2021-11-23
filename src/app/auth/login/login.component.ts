@@ -27,7 +27,7 @@ export class LoginComponent {
 
   crearFormulario(){
     this.formulario = this.fb.group({
-      correo: ['', [Validators.required, Validators.pattern("^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")]],
+      correo: ['', [Validators.required]],
       clave : ['', [Validators.required]]
     });
   }
@@ -49,12 +49,10 @@ export class LoginComponent {
         if(resp.success){
           this.toastr.success('Usuario identificado.', 'Éxito!',{closeButton:true});
           localStorage.setItem('datos', this.cryptoService.encriptar(JSON.stringify(resp.content)))
-          localStorage.setItem('usuario', resp.content['nombre'] + ', ' + resp.content['apellidoPaterno'])
-          //console.log(resp.content['nombre'] + ', ' + resp.content['apellidoPaterno'] )
           this.formulario.reset();
           this.routes.navigate(['/Home']);
         }
-      
+
       });
 
     }else{

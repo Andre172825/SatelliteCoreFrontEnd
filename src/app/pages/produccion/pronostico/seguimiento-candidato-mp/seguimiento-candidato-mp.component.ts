@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PronosticoService } from '@data/services/backEnd/pages/pronostico.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -14,45 +15,62 @@ export class SeguimientoCandidatoMpComponent {
   listaDettalleOC: any[]
   itemModal: string = ""
   descripcionModal: string = ""
+  flagLoading: boolean =  false
+  formularioFiltro: FormGroup
 
   messagerNgxTable = {
     'emptyMessage': 'No se ha encontrado candidatos para este filtro',
     'totalMessage': 'Candidatos'
   }
 
-  constructor(private _pronosticoService: PronosticoService, private _modalService: NgbModal) { 
-    this.obtenerListaCandidatosMP('MPAGAR1')
-
+  constructor(private _pronosticoService: PronosticoService, private _modalService: NgbModal, private _fb: FormBuilder) {
+    this.crearFormulario()
+    this.obtenerListaCandidatosMP()
   }
 
-  obtenerListaCandidatosMP(regla: string){
+  crearFormulario(){
+    this.formularioFiltro =  this._fb.group({
+      regla: ['', Validators.required],
+      textFilter: ['']
+    })
+
+    this.formularioFiltro.reset({
+      regla: 'MPAGAR1',
+      textFilter: ''
+    })
+  }
+
+  obtenerListaCandidatosMP(){
+    this.flagLoading =  true
     this.listaCandidatos = []
     this.dataCompleta = []
+    this.messagerNgxTable.emptyMessage = 'No se ha encontrado candidatos para este filtro'
+    let regla = this.formularioFiltro.get('regla').value
+
     this._pronosticoService.ListSeguimientoCandidatosMateriaPrima(regla).subscribe(
       (resp:any) => {
         this.listaCandidatos = resp['seguimientoCandidatosMPA']
         this.dataCompleta = resp['seguimientoCandidatosMPA']
         this.listaCompletaOCPendientes = resp['ordenComprasPendientes']
+        this.filtroCandidato()
+        this.flagLoading = false
+      },
+      catchError => {
+        this.messagerNgxTable.emptyMessage = 'Ocurrio un error al obtener los candidatos'
       }
     )
   }
 
-  cambioRegla(regla){
-    this.obtenerListaCandidatosMP(regla);
-  }
-
-  ActualizarLista(regla){
-    this.obtenerListaCandidatosMP(regla);
-  }
-
-  filtroCandidato(cadena: string){
+  filtroCandidato(){
     this.listaCandidatos = []
-    if(cadena == '')
+    let texto =  this.formularioFiltro.get('textFilter').value.toLowerCase()
+
+    if(texto == '')
       this.listaCandidatos = this.dataCompleta
-    else 
-      this.listaCandidatos = this.dataCompleta.filter( x => x['item'].toLowerCase().indexOf(cadena.toLowerCase()) !== -1 || x['descripcion'].toLowerCase().indexOf(cadena.toLowerCase()) !== -1)
+    else
+      this.listaCandidatos = this.dataCompleta.filter( x => x['item'].toLowerCase().indexOf(texto) !== -1 || x['descripcion'].toLowerCase().indexOf(texto) !== -1)
   }
-  
+
   getPendienteOrdenComprar(item: string): boolean{
     return this.listaCompletaOCPendientes.filter(x => x['item'] == item && x['pendienteOC'] > 0).length > 0
   }
@@ -66,7 +84,7 @@ export class SeguimientoCandidatoMpComponent {
   }
 
   abrirModalTransito(modal: NgbModal, item, filtro, descripcion){
-    
+
     this.listaDettalleOC = []
     this.itemModal = item
     this.descripcionModal = descripcion
@@ -85,7 +103,7 @@ export class SeguimientoCandidatoMpComponent {
         size: 'xl',
         scrollable: true
       });
-    else 
+    else
       this._modalService.open(modal, {
         centered: true,
         backdrop: 'static',

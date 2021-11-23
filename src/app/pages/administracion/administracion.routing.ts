@@ -8,7 +8,7 @@ export const AdministracionRoutes: Routes = [
     canActivate: [AuthGuard],
     children : [
       {
-        path: 'Usuarios',
+        path: 'usuarios',
         component: ListarUsuarioComponent,
         data: {
           title: "Mantenimiento de usuario",

@@ -4,6 +4,7 @@ export interface SeguimientoCandidato {
   candidato : number,
   codSut: string,
   item : string,
+  regla: string,
   descripcion : string,
   coeficienteVariacion : number,
   pronostico : number,

@@ -4,38 +4,38 @@ import { AuthGuard } from "@guard/auth.guard";
 import { LogPedidosCreadosComponent } from '@pages/produccion/pronostico/log-pedidos-creados/log-pedidos-creados.component';
 import { SeguimientoCandidatoMpComponent } from '@pages/produccion/pronostico/seguimiento-candidato-mp/seguimiento-candidato-mp.component'
 
-export const PronosticoRoutes: Routes = [
+export const ProduccionRoutes: Routes = [
   {
-    path: '',
+    path: 'pronostico',
     canActivate: [AuthGuard],
     children : [
       {
-        path: 'monitoreoCandidatos',
+        path: 'candidatoProArima',
         component: SeguimientoCandidatosProComponent,
         data: {
-          title: "Monitoreo de Items",
+          title: "Candidatos Producto Arima",
           urls: [
-            {title: 'Monitoreo de Items' }
+            {title: 'Candidatos Producto' }
           ]
         }
       },
       {
-        path: 'monitoreoCandidatosMP',
+        path: 'candidatoMPArima',
         component: SeguimientoCandidatoMpComponent,
         data: {
-          title: "Monitoreo de materia prima",
+          title: "Candidatos Materia Prima Arima",
           urls: [
-            {title: 'Monitoreo de materia prima' }
+            {title: 'Candidatos Materia Prima' }
           ]
         }
       },
       {
-        path: 'pedidoCreadoAutoLog',
+        path: 'pedidoCreadoArima',
         component: LogPedidosCreadosComponent,
         data: {
-          title: "Pedidos Creados Log",
+          title: "Pedidos Creados Arima",
           urls: [
-            {title: 'Pedidos Creados Log' }
+            {title: 'Pedidos Creados' }
           ]
         }
       }
