@@ -8,7 +8,9 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { GenericoService } from '@shared/services/comunes/generico.service';
 import { DatePipe } from '@angular/common';
 import { CryptoService } from '@shared/services/comunes/crypto.service';
-import { saveAs } from 'file-saver'
+import { saveAs } from 'file-saver';
+import { SesionService } from '@shared/services/comunes/sesion.service';
+import { UsuarioSesionData } from '@data/interface/Response/UsuarioSesionDara.interface';
 
 @Component({
   selector: 'app-certificado',
@@ -47,7 +49,7 @@ export class CertificadoComponent implements OnInit {
   mostrarTextValidPass: boolean = false
 
   constructor(private _esterilizacionService: EsterilizacionService, private _fb: FormBuilder, private modalService: NgbModal,
-      private genericoServices: GenericoService, private datePipe: DatePipe, private _cryptoService: CryptoService,)
+      private genericoServices: GenericoService, private datePipe: DatePipe, private _cryptoService: CryptoService, private _sesionService: SesionService)
   {
     this.crearFormulario();
 
@@ -162,8 +164,10 @@ export class CertificadoComponent implements OnInit {
 
     var DropdownList  = document.getElementById("equipo") as HTMLSelectElement;
     var textoEquipo = DropdownList.options[DropdownList.selectedIndex].text;
+    const datosUsuario: UsuarioSesionData = this._sesionService.datosPersonales();
     const body = {
       Id: 0,
+      CodigoCertificado : '',
       FechaEmision: this.formularioCertificado.get('fechaEmision').value,
       OrdenServicio: this.formularioCertificado.get('ordenServicio').value,
       Cliente: this.formularioCertificado.get('cliente').value,
@@ -183,7 +187,7 @@ export class CertificadoComponent implements OnInit {
       HRProceso: this.formularioCertificado.get('hrProceso').value,
       Observaciones: this.formularioCertificado.get('observacion').value,
       Conclusion: "Los resultados obtenidos tras el proceso de esterilización son CONFORMES   , por tanto, se concluye que el material se encuentra ESTÉRIL.",
-      Usuario: localStorage.usuario,
+      Usuario: datosUsuario.codUsuario.toString(),
       IDLoteCintaTestigo: parseInt(this.formularioCertificado.get('loteId_21').value),
       IDLoteIndicadorQuimico: parseInt(this.formularioCertificado.get('loteId_22').value),
       ConformeCintaTestigo: this.formularioCertificado.get('resultado_21').value == "C" ? true : false,
@@ -208,7 +212,7 @@ export class CertificadoComponent implements OnInit {
 
     });
     this.modalCertificado.close();
-
+    this.filtrarCertificados();
       //}
   }
 
