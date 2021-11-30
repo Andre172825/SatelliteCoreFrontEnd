@@ -12,11 +12,11 @@ export class SesionService {
 
 
   datosPersonales(): UsuarioSesionData{
-    try {
 
+    try {
       var  datos: UsuarioSesionData = {
-        codigo: 0,
-        nombre: "",
+        codUsuario: 0,
+        nombres: "",
         apellidoPaterno: "",
         correo:"",
         token: ""

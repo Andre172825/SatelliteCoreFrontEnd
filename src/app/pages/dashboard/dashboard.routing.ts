@@ -6,6 +6,7 @@ import { ExportacionComponent } from '@pages/dashboard/comercial/exportacion/exp
 import { PedidoArimaComponent } from '@pages/dashboard/produccion/pedido-arima/pedido-arima.component';
 import { InretailComponent } from '@pages/dashboard/comercial/inretail/inretail.component'
 import { RentabilidadComponent } from '@pages/dashboard/comercial/rentabilidad/rentabilidad.component'
+import { RentabilidadEstrategicoComponent } from './comercial/rentabilidad-estrategico/rentabilidad-estrategico.component';
 
 export const DashboardRoutes: Routes = [
     {
@@ -61,7 +62,14 @@ export const DashboardRoutes: Routes = [
                         { title: 'Dashboard rentabilidad' }
                     ]
                 }
-            }
+            },
+            {
+              path: 'rentabilidadEstrategica',
+              component: RentabilidadEstrategicoComponent ,
+              data: {
+                title: "Dashboard comercial rentabilidad estratégica"
+              }
+          }
         ]
     },
     {
@@ -72,7 +80,7 @@ export const DashboardRoutes: Routes = [
                 path: 'pedidosArima',
                 component: PedidoArimaComponent ,
                 data: {
-                title: "Dashboard pruducción pedidos arima",
+                title: "Dashboard producción pedidos arima",
                 urls: [
                         { title: 'Dashboard pedidos arima' }
                     ]

@@ -22,7 +22,7 @@ export class VerticalNavigationComponent {
 
   constructor(private _sesionService: SesionService) {
     this.sesionUsuario = _sesionService.datosPersonales();
-    this.nombreUsuario= this.sesionUsuario.nombre.split(" ",1) + ' ' + this.sesionUsuario.apellidoPaterno
+    this.nombreUsuario = this.sesionUsuario.nombres.split(" ",1) + ' ' + this.sesionUsuario.apellidoPaterno
   }
 
   cerrarSesion(){

@@ -65,32 +65,36 @@ export class InterceptorService implements HttpInterceptor {
           if(!data) this.authService.onLogout()
       }),
       catchError((err: HttpErrorResponse) => {
+        // console.log({err})
+        // if(err.status === 0)
+        // {
+        //   this.toastr.error("El servicio no responde", 'Error de servicio');
+        //   localStorage.clear();
+        //   this.router.navigate(['authentication/login'])
+        // }
+        // else
+          if (err.status === 401){
+            if(err.error?.message == 'Correo o contraseña incorrecta.')
+              this.toastr.warning(err.error.message, 'Aviso!');
+            else
+              if(this.authService.isLogin())
+                this.toastr.warning('No se ha iniciado sesión', 'Aviso!')
+              else
+                if(this.authService.isExpiredToken())
+                  this.toastr.warning('La sesión a expirado', 'Error de Autorización')
+                else
+                  this.toastr.error('Error al validar su identidad', 'Error')
 
-        if (err.status === 401){
-
-          if(err.error.message == 'Correo o contraseña incorrecta.'){
-            this.toastr.warning(err.error.message, 'Error de Autenticar!');
-            return throwError( err )
-          }
-
-          if(!this.authService.isLogin()){
-            this.toastr.error('Ud. no está autenticado.', 'Error')
-          }else if(this.authService.isExpiredToken()){
-            this.toastr.warning('La sesión a expirado', 'Error de Autorización')
-          }else{
-            this.toastr.error('Ha ocurrido un error inesperado', 'Error')
-          }
-          this.router.navigate(['authentication/login'])
           localStorage.clear();
-
+          this.router.navigate(['authentication/login'])
         }else{
           if(err.status === 403){
-            this.toastr.error('Ha ocurrido un error inesperado', 'Error')
-            this.toastr.warning('No cuenta con los permisos necesarios', 'Aviso.')
+            this.toastr.warning('No cuenta con los permisos necesarios.', 'Aviso!')
+            this.router.navigate(['/Home']);
+            return
           }
+
         }
-
-
         return throwError( err )
       })
     )

@@ -13,8 +13,7 @@ import { CryptoService } from '@shared/services/comunes/crypto.service';
 
 @Component({
   selector: 'app-listar-usuario',
-  templateUrl: './listar-usuario.component.html',
-  styleUrls: ['./listar-usuario.component.css']
+  templateUrl: './listar-usuario.component.html'
 })
 export class ListarUsuarioComponent implements OnInit {
 
@@ -89,18 +88,17 @@ export class ListarUsuarioComponent implements OnInit {
 
     this.formularioUsuario = this._fb.group({
       codigoUsuario: [{value: '', disabled: true}],
-      nombreUsuario: ['', [Validators.required]],
-      apellidoPaterno: ['', [Validators.required]],
-      apellidoMaterno: ['', [Validators.required]],
-      tipoDocumento: ['', [Validators.required]],
-      nroDocumento: ['', [Validators.required]],
+      nombreUsuario: [{value: '', disabled: true}],
+      apellidoPaterno: [{value: '', disabled: true}],
+      apellidoMaterno: [{value: '', disabled: true}],
+      tipoDocumento: [{value: '', disabled: true}],
+      nroDocumento: [{value: '', disabled: true}],
       estado: ['', [Validators.required]],
       correo: ['', [Validators.required]],
-      genero: ['', [Validators.required]],
-      pais: ['', [Validators.required]],
-      celular: ['', [Validators.required]],
-      fechaNacimiento: ['', [Validators.required]],
-      motivo: ['']
+      genero: [{value: '', disabled: true}],
+      pais: [{value: '', disabled: true}],
+      celular: [{value: '', disabled: true}],
+      fechaNacimiento: [{value: '', disabled: true}]
     })
 
     this.formulariosPassword =  this._fb.group({
@@ -183,8 +181,8 @@ export class ListarUsuarioComponent implements OnInit {
 
     if(usuario != null)
       this.formularioUsuario.reset({
-        codigoUsuario: usuario.idUsuario,
-        nombreUsuario: usuario.nombre,
+        codigoUsuario: usuario.codUsuario,
+        nombreUsuario: usuario.nombres,
         apellidoPaterno: usuario.apellidoPaterno,
         apellidoMaterno: usuario.apellidoMaterno,
         tipoDocumento: usuario.tipoDocumento,
@@ -192,8 +190,8 @@ export class ListarUsuarioComponent implements OnInit {
         estado: usuario.estado,
         correo: usuario.correo,
         genero: usuario.sexo,
-        pais: usuario.pais,
-        celular: usuario.celular,
+        pais: usuario.nacionalidad,
+        celular: usuario.telefono,
         fechaNacimiento: this.datePipe.transform(new Date(usuario.fechaNacimiento), 'yyyy-MM-dd')
       })
 
@@ -203,7 +201,7 @@ export class ListarUsuarioComponent implements OnInit {
       size: 'lg',
       scrollable: true
     });
-    
+
   }
 
   abrirModalContrania(modal: NgbModal){

@@ -12,11 +12,13 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { EditarUsuarioComponent } from './usuario/editar-usuario/editar-usuario.component';
 
 
 @NgModule({
   declarations: [
-    ListarUsuarioComponent
+    ListarUsuarioComponent,
+    EditarUsuarioComponent
   ],
   imports: [
     RouterModule.forChild(AdministracionRoutes),

@@ -31,6 +31,4 @@ export class UsuarioService {
       catchError(() => throwError("Error al cambiar la contraseña del usuario"))
     )
   }
-
-
 }

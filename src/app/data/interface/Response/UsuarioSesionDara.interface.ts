@@ -1,7 +1,7 @@
 
 export interface UsuarioSesionData {
-  codigo: number,
-  nombre: string,
+  codUsuario: number,
+  nombres: string,
   apellidoPaterno: string,
   correo: string,
   token: string

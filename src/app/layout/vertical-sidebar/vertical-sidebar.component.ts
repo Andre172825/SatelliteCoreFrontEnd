@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MenuInfo } from '@data/interface/menu.model';
 import { MenuService } from '@shared/services/plantilla/menu.service';
@@ -28,13 +29,17 @@ export class VerticalSidebarComponent {
     this.notify.emit(!this.showClass);
   }
 
-  constructor(private menuServise: MenuService, private router: Router, private _sesionService: SesionService) {
+  constructor(private menuServise: MenuService, private router: Router, private _sesionService: SesionService, private _toast: ToastrService) {
 
     this.sesionUsuario = _sesionService.datosPersonales();
-    this.nombreUsuario= this.sesionUsuario.nombre.split(" ",1) + ' ' + this.sesionUsuario.apellidoPaterno
+    this.nombreUsuario= this.sesionUsuario.nombres.split(" ",1) + ' ' + this.sesionUsuario.apellidoPaterno
 
     this.menuServise.obtenerMenuUsuarioSesion().subscribe( menuItems => {
 
+      if(menuItems.length < 1) {
+        _toast.warning('No cuenta con ningun permiso asignado.', 'Sin accesos.')
+        _sesionService.cerrarSesion;
+      }
       this.sidebarnavItems = menuItems;
       // Active menu
       this.sidebarnavItems.filter(m => m.subMenu.filter(

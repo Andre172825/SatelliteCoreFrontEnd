@@ -48,7 +48,7 @@ export class PerfilComponent implements OnInit {
     let usuario =  this._sesionUsuario.datosPersonales();
 
     const body = {
-      IdUsuario: usuario.codigo,
+      IdUsuario: usuario.codUsuario,
       Apellido: usuario.apellidoPaterno
     }
 

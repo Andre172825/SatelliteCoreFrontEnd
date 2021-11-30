@@ -22,8 +22,7 @@ export class AuthGuard implements CanActivate {
     const datosUsuario: UsuarioSesionData = this._sesionService.datosPersonales();
 
     const body = {
-      "IdUsuario": datosUsuario.codigo,
-      "Apellido": datosUsuario.apellidoPaterno,
+      "CodUsuario": datosUsuario.codUsuario,
       "OpcionMenu": state.url
     }
 

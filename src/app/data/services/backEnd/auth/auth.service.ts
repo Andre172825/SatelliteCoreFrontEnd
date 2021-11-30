@@ -29,10 +29,13 @@ export class AuthService {
   }
 
   isExpiredToken(){
-    try{
 
+    try{
       var  firma: string = this.sesionService.datosPersonales().token.split('.',2)[1];
       var {exp} = JSON.parse(this.crypto.descodificarBase64(firma))
+
+      console.log('Vencimiento de token')
+      console.log(new Date(exp * 1000) <= new Date())
 
       if (new Date(exp * 1000) <= new Date())
         return true
@@ -47,10 +50,10 @@ export class AuthService {
   isLogin(){
 
     try {
-      
+
       const data=JSON.parse(this.crypto.desencriptar(localStorage.getItem('datos')));
-      console.log(data)
       var token_access = data['access_token'];
+
     } catch (error) {
       this.onLogout();
       return false

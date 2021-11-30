@@ -4,6 +4,8 @@ import { CotizacionService } from '@data/services/backEnd/pages/cotizacion.servi
 import { Paginado } from '@data/interface/Comodin/Paginado.interface';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { saveAs } from 'file-saver'
+import { SesionService } from '@shared/services/comunes/sesion.service';
+import { UsuarioSesionData } from '@data/interface/Response/UsuarioSesionDara.interface';
 
 @Component({
   selector: 'app-generacionformatos',
@@ -42,7 +44,7 @@ export class GeneracionFormatosComponent {
   NroDocumento: String;
   FormatoNoEncontrado: Boolean = false;
 
-  constructor(private modalService: NgbModal, private _cotizacionService: CotizacionService)
+  constructor(private modalService: NgbModal, private _cotizacionService: CotizacionService, private _sesionService: SesionService)
   {}
 
   cambioPagina(paginaCambiada: Number){
@@ -216,6 +218,8 @@ export class GeneracionFormatosComponent {
   }
 
   ConstruirBodyRespuestas(IdFormato, NroDocumento, modal){
+    const datosUsuario: UsuarioSesionData = this._sesionService.datosPersonales();
+
     var contenedor = document.getElementById("contenedor");
     var body = Object();
     var resp = Array();
@@ -225,8 +229,6 @@ export class GeneracionFormatosComponent {
       obj.CodigoDescripcionCampo = (<HTMLInputElement>element.childNodes[0].childNodes[1]).id;
       obj.Respuesta = (<HTMLInputElement>element.childNodes[0].childNodes[1]).value;
       obj.IdCampo = parseInt((<HTMLSpanElement>element.childNodes[0].childNodes[2]).innerHTML);
-      // console.log((<HTMLSpanElement>element.childNodes[0].childNodes[2]).innerHTML);
-
       obj.TipoCampo = element.childNodes[0].childNodes[3].textContent;
       obj.CodigoRespuesta = "";
       resp.push(obj);
@@ -234,6 +236,7 @@ export class GeneracionFormatosComponent {
 
     body.IdFormato = parseInt(IdFormato);
     body.NroDocumento = NroDocumento;
+    body.CodUsuario = datosUsuario.codUsuario;
     body.Campos = resp;
 
     var tbody = document.getElementById("tbodyDetalle");

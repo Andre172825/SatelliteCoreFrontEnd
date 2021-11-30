@@ -1,16 +1,16 @@
 export interface UsuarioData {
-  idUsuario: number,
-  nombre: string,
+  codUsuario: number,
+  nombres: string,
   apellidoPaterno: string,
   apellidoMaterno: string,
-  tipoDocumento: number,
+  tipoDocumento: string,
   nroDocumento: string,
   sexo: string,
-  pais: number,
+  nacionalidad: string,
   correo: string,
-  flagCambioClave: boolean,
   estado: string,
   fechaNacimiento: string,
-  celular: string,
-  motivoInactivo: string,
+  telefono: string,
+  flagCambioClave: boolean,
+  fechaVencimientoClave: boolean
 }

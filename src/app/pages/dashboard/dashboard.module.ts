@@ -7,6 +7,7 @@ import { DashboardRoutes } from '@pages/dashboard/dashboard.routing';
 import { PedidoArimaComponent } from './produccion/pedido-arima/pedido-arima.component';
 import { InretailComponent } from './comercial/inretail/inretail.component';
 import { RentabilidadComponent } from './comercial/rentabilidad/rentabilidad.component';
+import { RentabilidadEstrategicoComponent } from './comercial/rentabilidad-estrategico/rentabilidad-estrategico.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { RentabilidadComponent } from './comercial/rentabilidad/rentabilidad.com
     ExportacionComponent,
     PedidoArimaComponent,
     InretailComponent,
-    RentabilidadComponent
+    RentabilidadComponent,
+    RentabilidadEstrategicoComponent
   ],
   imports: [
     RouterModule.forChild(DashboardRoutes)
