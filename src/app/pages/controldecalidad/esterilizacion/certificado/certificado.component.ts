@@ -29,6 +29,7 @@ export class CertificadoComponent implements OnInit {
   listaCertificados: CertificadoData[] = []
   listaLotes: LoteData[] = []
   loteMaestro: boolean = true;
+  OpcionesEquipo: boolean = false;
 
   //Variables de paginación
   paginador: Paginado = {
@@ -61,33 +62,11 @@ export class CertificadoComponent implements OnInit {
 
     this.FiltrarLotes();
     this.filtrarCertificados();
-    //this.obtenerRoles()
-
-  //   this.dropdownSettings = {
-  //     singleSelection: false,
-  //     idField: 'codigo',
-  //     textField: 'titulo',
-  //     enableCheckAll: false,
-  //     allowSearchFilter: true,
-  //     searchPlaceholderText: 'Buscar Rol'
-  //   };
   }
-
-  // cargarCombos(){
-  //   this.genericoServices.listarPaises().subscribe( resp => {
-  //     this.listaPaises = resp
-  //   })
-
-  //   this.genericoServices.listarTipoDocumentoIdentidad().subscribe( resp => {
-  //     this.listaTipoDocumentos =  resp
-  //   })
-  // }
-
   crearFormulario(){
 
     this.formulario = this._fb.group({
       ordenServicio : ['']
-      //registroPorPagina: ['', Validators.required]
     })
 
     this.formularioCertificado = this._fb.group({
@@ -134,7 +113,7 @@ export class CertificadoComponent implements OnInit {
       ibNoExpuestos_24: ['', [Validators.required]],
       ibNoExpuestosResultado_24: ['', [Validators.required]],
       conclusion_24: ['', [Validators.required]],
-
+      opcion: [''],
       observacion: ['', [Validators.required]],
 
       motivo: ['']
@@ -158,10 +137,88 @@ export class CertificadoComponent implements OnInit {
     this.filtrarCertificados()
   }
 
+  CambioEquipo(){
+    var equipo = (<HTMLSelectElement>document.getElementById("equipo"));
+    var equipoSelected = equipo.value;
+    var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"))
+    var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
+    var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"))
+    var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
+
+    //BIO 300 --> 1
+    //HMQ-0.5 --> 2
+    //ARH-750 --> 3
+    if(equipoSelected == "1"){
+      this.OpcionesEquipo = false;
+      tiempoAireacion.value = "4";
+      tiempoAireacion.readOnly = true;
+
+      tiempoExposicion.value = "12";
+      tiempoExposicion.readOnly = true;
+
+      taUnidadMedida.value = "horas";
+      taUnidadMedida.disabled = true;
+
+      teUnidadMedida.value = "horas";
+      teUnidadMedida.disabled = true;
+    }else if(equipoSelected == "2"){
+      this.OpcionesEquipo = true;
+      this.formularioCertificado.patchValue({ tiempoAireacion : 50, tiempoExposicion : 180 })    
+      var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"));
+      var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
+      var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"));
+      var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
+
+      tiempoAireacion.readOnly = true;    
+      tiempoExposicion.readOnly = true;
+      taUnidadMedida.value = "remociones";
+      taUnidadMedida.disabled = true;
+      teUnidadMedida.value = "minutos";
+      teUnidadMedida.disabled = true;
+      setTimeout(function(){ (<HTMLInputElement>document.getElementById("opcion1")).checked = true; }, 100);
+      
+    }else{
+      this.OpcionesEquipo = false;
+      tiempoAireacion.value = "";
+      tiempoAireacion.readOnly = false;
+
+      tiempoExposicion.value = "";
+      tiempoExposicion.readOnly = false;
+
+      taUnidadMedida.value = "horas";
+      taUnidadMedida.disabled = false;
+
+      teUnidadMedida.value = "horas";
+      teUnidadMedida.disabled = false;
+    }
+  }
+
+  IniciarModal(){
+    var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"))
+    var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
+    var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"))
+    var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
+
+    tiempoAireacion.value = "4";
+    tiempoAireacion.readOnly = true;
+
+    tiempoExposicion.value = "12";
+    tiempoExposicion.readOnly = true;
+
+    taUnidadMedida.value = "horas";
+    taUnidadMedida.disabled = true;
+
+    teUnidadMedida.value = "horas";
+    teUnidadMedida.disabled = true;
+  }
+
   nuevoCertificado(){
 
     //if(this.formularioCertificado.valid){
-
+    var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
+    var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
+    var cantidadUnidadMedida = (<HTMLSelectElement>document.getElementById("cantidadUnidadMedida"));
+    
     var DropdownList  = document.getElementById("equipo") as HTMLSelectElement;
     var textoEquipo = DropdownList.options[DropdownList.selectedIndex].text;
     const datosUsuario: UsuarioSesionData = this._sesionService.datosPersonales();
@@ -176,14 +233,16 @@ export class CertificadoComponent implements OnInit {
       Marca: this.formularioCertificado.get('marca').value,
       Cantidad: this.formularioCertificado.get('cantidad').value,
       Equipo: textoEquipo,
-      UnidadMedida: "und",
+      CantidadUnidadMedida: cantidadUnidadMedida.value,
       Estado: "A",
       FechaInicio: this.formularioCertificado.get('fechaInicio').value,
       FechaTermino: this.formularioCertificado.get('fechaTermino').value,
       Metodo: this.formularioCertificado.get('metodoEsterilizacion').value,
       Temperatura: this.formularioCertificado.get('temperaturaProceso').value,
       TiempoAireacion: this.formularioCertificado.get('tiempoAireacion').value,
+      TiempoAireacionUnidadMedida: taUnidadMedida.value,
       TiempoExposicion: this.formularioCertificado.get('tiempoExposicion').value,
+      TiempoExposicionUnidadMedida: teUnidadMedida.value,
       HRProceso: this.formularioCertificado.get('hrProceso').value,
       Observaciones: this.formularioCertificado.get('observacion').value,
       Conclusion: "Los resultados obtenidos tras el proceso de esterilización son CONFORMES   , por tanto, se concluye que el material se encuentra ESTÉRIL.",
@@ -197,10 +256,10 @@ export class CertificadoComponent implements OnInit {
       ConformeTrazasOE: this.formularioCertificado.get('resultado_23').value == "C" ? true : false,
       TipoIB: this.formularioCertificado.get('tipo_24').value,
       CodigoIB: this.formularioCertificado.get('iaCodigo_24').value,
-      //IDLoteIB: parseInt(this.formularioCertificado.get('loteId_24').value),
-      DescripcionIB: this.formularioCertificado.get('descripcion_24').value,
-      LoteIB: this.formularioCertificado.get('lote_24').value,
-      ExpiraIB: this.formularioCertificado.get('expira_24').value,
+      IDLoteIB: parseInt(this.formularioCertificado.get('loteId_24').value),
+      // DescripcionIB: this.formularioCertificado.get('descripcion_24').value,
+      // LoteIB: this.formularioCertificado.get('lote_24').value,
+      // ExpiraIB: this.formularioCertificado.get('expira_24').value,
 
       IBExpuestos: this.formularioCertificado.get('ibExpuestos_24').value,
       IBExpuestosResultado: this.formularioCertificado.get('ibExpuestosResultado_24').value == "N" ? false : true,
@@ -277,13 +336,50 @@ export class CertificadoComponent implements OnInit {
   CambioIB(e){
     if(e.value == "C"){
       this.formularioCertificado.patchValue({ iaCodigo_24 : "CCIC-08"
-                                              ,descripcion_24 : "Bionova - BT10" })
+                                              // ,descripcion_24 : "Bionova - BT10" 
+                                            })
     }
     if(e.value == "L"){
       this.formularioCertificado.patchValue({ iaCodigo_24 : "CCIC-09"
-                                              ,descripcion_24 : "Bionova - BT110" })
+                                              //,descripcion_24 : "Bionova - BT110" 
+                                            })
     }
   }
+
+  CambioOP(e){
+    if(e.value == "op1"){
+      this.formularioCertificado.patchValue({ tiempoAireacion : 50
+                                              ,tiempoExposicion : 180 })    
+      var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"));
+      var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
+      var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"));
+      var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
+
+      tiempoAireacion.readOnly = true;    
+      tiempoExposicion.readOnly = true;
+      taUnidadMedida.value = "remociones";
+      taUnidadMedida.disabled = true;
+      teUnidadMedida.value = "minutos";
+      teUnidadMedida.disabled = true;
+    }
+    if(e.value == "op2"){
+      this.formularioCertificado.patchValue({ tiempoAireacion : 8
+                                              ,tiempoExposicion : 240 })
+
+      var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"));
+      var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
+      var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"));
+      var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
+
+      tiempoAireacion.readOnly = true;    
+      tiempoExposicion.readOnly = true;
+      taUnidadMedida.value = "horas";
+      taUnidadMedida.disabled = true;
+      teUnidadMedida.value = "minutos";
+      teUnidadMedida.disabled = true;
+    }
+  }
+  
   FiltrarLotes(){
     const body = {
       Descripcion: this.formularioLote.get('descripcion').value,
@@ -321,6 +417,7 @@ export class CertificadoComponent implements OnInit {
 
   ObtenerLote(modal: NgbModal, lote){
     var identificador = this.formularioLote.get('identificador').value;
+    console.log(identificador);
     if(identificador == 1){
       this.formularioCertificado.patchValue({descripcion_21 : lote.descripcion
         ,lote_21 : lote.lote
@@ -336,8 +433,8 @@ export class CertificadoComponent implements OnInit {
     }
 
     if(identificador == 3){
-      this.formularioCertificado.patchValue({//descripcion_24 : lote.descripcion
-         lote_24 : lote.lote
+      this.formularioCertificado.patchValue({descripcion_24 : lote.descripcion
+         ,lote_24 : lote.lote
          ,expira_24 : lote.expira
         ,loteId_24 : lote.id});
     }
@@ -345,6 +442,7 @@ export class CertificadoComponent implements OnInit {
   }
 
   abrirModal(modal: NgbModal, usuario: CertificadoData | null){
+    
 
     this.formularioCertificado.reset();
     var ultimoCertificado = this.listaCertificados.pop();
@@ -382,7 +480,9 @@ export class CertificadoComponent implements OnInit {
                                             ,lote_22: lote22
                                             ,expira_22: expira22
                                             ,loteId_21: id21
-                                            ,loteId_22: id22});
+                                            ,loteId_22: id22
+                                            ,tiempoAireacion: 4
+                                            ,tiempoExposicion: 12});
     this.modalCertificado =
     this.modalService.open(modal, {
       centered: true,
@@ -390,6 +490,7 @@ export class CertificadoComponent implements OnInit {
       size: 'xl',
       scrollable: true
     });
+    this.IniciarModal();
   }
 
 }

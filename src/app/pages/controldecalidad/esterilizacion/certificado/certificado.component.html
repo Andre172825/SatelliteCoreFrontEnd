@@ -240,7 +240,7 @@
             />
           </div>
         </div>
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-4">
           <div class="form-group">
             <label for="cantidad" class="control-label col-form-label"
               >Cantidad</label
@@ -254,18 +254,72 @@
             />
           </div>
         </div>
+        <div class="col-sm-12 col-md-2" style="margin-top: auto">
+          <div class="form-group">
+            <select
+              name="cantidadUnidadMedida"
+              class="form-control"
+              id="cantidadUnidadMedida"
+            >
+              <option value="und">und</option>
+              <option value="lt">lt</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
+        </div>
       </div>
+
       <div class="row">
         <div class="col-sm-12 col-md-6">
           <div class="form-group">
             <label for="equipo" class="control-label col-form-label"
               >Equipo</label
             >
-            <select name="equipo" class="form-control" id="equipo">
-              <option value="1">BIO</option>
+            <select
+              name="equipo"
+              class="form-control"
+              id="equipo"
+              (change)="CambioEquipo()"
+            >
+              <option value="1">BIO 300</option>
               <option value="2">HMQ-0.5</option>
               <option value="3">ARH-750</option>
             </select>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6" *ngIf="OpcionesEquipo">
+          <div class="form-group">
+            <label class="control-label col-form-label">Opciones</label>
+            <div class="form-control" style="border: none">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input
+                  formControlName="opcion"
+                  type="radio"
+                  class="custom-control-input"
+                  id="opcion1"
+                  name="opcion"
+                  value="op1"
+                  (change)="CambioOP($event.target)"
+                />
+                <label class="custom-control-label" for="opcion1"
+                  >Opción 1</label
+                >
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input
+                  formControlName="opcion"
+                  type="radio"
+                  class="custom-control-input"
+                  id="opcion2"
+                  name="opcion"
+                  value="op2"
+                  (change)="CambioOP($event.target)"
+                />
+                <label class="custom-control-label" for="opcion2"
+                  >Opción 2</label
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -341,7 +395,7 @@
             />
           </div>
         </div>
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-3">
           <div class="form-group">
             <label for="tiempoAireacion" class="control-label col-form-label"
               >Tiempo aireación</label
@@ -355,9 +409,22 @@
             />
           </div>
         </div>
+        <div class="col-sm-12 col-md-3" style="margin-top: auto">
+          <div class="form-group">
+            <select
+              name="taUnidadMedida"
+              class="form-control"
+              id="taUnidadMedida"
+            >
+              <option value="horas">horas</option>
+              <option value="minutos">minutos</option>
+              <option value="remociones">remociones</option>
+            </select>
+          </div>
+        </div>
       </div>
       <div class="row">
-        <div class="col-sm-12 col-md-6">
+        <div class="col-sm-12 col-md-4">
           <div class="form-group">
             <label for="tiempoExposicion" class="control-label col-form-label"
               >Tiempo de exposición</label
@@ -369,6 +436,18 @@
               class="form-control"
               placeholder="Tiempo de exposición"
             />
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-2" style="margin-top: auto">
+          <div class="form-group">
+            <select
+              name="teUnidadMedida"
+              class="form-control"
+              id="teUnidadMedida"
+            >
+              <option value="horas">horas</option>
+              <option value="minutos">minutos</option>
+            </select>
           </div>
         </div>
         <div class="col-sm-12 col-md-6">
@@ -728,6 +807,13 @@
             <label for="descripcion_24" class="control-label col-form-label"
               >Descripción</label
             >
+            <button
+              (click)="abrirModalLote(modalLote, 3)"
+              style="float: right"
+              class="btn btn-info btn-sm"
+            >
+              Buscar Lote
+            </button>
             <input
               type="text"
               formControlName="descripcion_24"
@@ -754,6 +840,7 @@
               id="lote_24"
               class="form-control"
               placeholder="Lote"
+              readonly
             />
           </div>
         </div>
@@ -768,6 +855,7 @@
               id="expira_24"
               class="form-control"
               placeholder="Expira"
+              readonly
             />
           </div>
         </div>

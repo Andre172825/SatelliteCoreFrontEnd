@@ -35,6 +35,10 @@ export const AppRoutes: Routes = [
       {
         path:'Comercial',
         loadChildren:() => import('@pages/comercial/comercial.module').then(m => m.ComercialModule)
+      },
+      {
+        path:'RRHH',
+        loadChildren:() => import('@pages/rrhh/rrhh.module').then(m => m.RRHHModule)
       }
     ]
   },
