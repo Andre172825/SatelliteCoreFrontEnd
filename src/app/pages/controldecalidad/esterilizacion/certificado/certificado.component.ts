@@ -323,7 +323,8 @@ export class CertificadoComponent implements OnInit {
 
   abrirModalLote(modal: NgbModal, identificador){
     this.formularioLote.reset();
-    this.formularioLote.patchValue({identificador : identificador});
+    this.formularioLote.patchValue({identificador : identificador
+                                    ,descripcion: ""});
     this.modalLote =
     this.modalService.open(modal, {
       centered: true,
@@ -349,7 +350,8 @@ export class CertificadoComponent implements OnInit {
   CambioOP(e){
     if(e.value == "op1"){
       this.formularioCertificado.patchValue({ tiempoAireacion : 50
-                                              ,tiempoExposicion : 180 })    
+                                              ,tiempoExposicion : 180 
+                                              ,temperaturaProceso: "" })
       var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"));
       var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
       var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"));
@@ -364,25 +366,28 @@ export class CertificadoComponent implements OnInit {
     }
     if(e.value == "op2"){
       this.formularioCertificado.patchValue({ tiempoAireacion : 8
-                                              ,tiempoExposicion : 240 })
+                                              ,tiempoExposicion : 240
+                                              ,temperaturaProceso: "52 °C ± 6 °C" })
 
       var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"));
       var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
       var tiempoExposicion = (<HTMLInputElement>document.getElementById("tiempoExposicion"));
       var teUnidadMedida = (<HTMLSelectElement>document.getElementById("teUnidadMedida"));
-
-      tiempoAireacion.readOnly = true;    
+//52 °C ± 6 °C
+      tiempoAireacion.readOnly = true;
       tiempoExposicion.readOnly = true;
       taUnidadMedida.value = "horas";
       taUnidadMedida.disabled = true;
       teUnidadMedida.value = "minutos";
       teUnidadMedida.disabled = true;
+
     }
   }
   
   FiltrarLotes(){
     const body = {
       Descripcion: this.formularioLote.get('descripcion').value,
+      Identificador: this.formularioLote.get('identificador').value,
       Pagina : this.pagina,
       RegistrosPorPagina: 10
     }
@@ -403,6 +408,7 @@ export class CertificadoComponent implements OnInit {
       Descripcion: this.formularioLoteDetalle.get('descripcionDetalleLote').value,
       Lote: this.formularioLoteDetalle.get('loteDetalleLote').value,
       Expira: this.formularioLoteDetalle.get('expiraDetalleLote').value,
+      Identificador: this.formularioLote.get('identificador').value
     }
 
     this._esterilizacionService.RegistrarLote(body).subscribe( resp => {
@@ -455,7 +461,12 @@ export class CertificadoComponent implements OnInit {
       var descripcion22 = "";
       var lote22 = "";
       var expira22 = "";
+
+      var descripcion24 = "";
+      var lote24 = "";
+      var expira24 = "";
     }else{
+      
       var descripcion21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).descripcion;
       var lote21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).lote;
       var expira21 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteCintaTestigo).expira;
@@ -465,6 +476,11 @@ export class CertificadoComponent implements OnInit {
       var lote22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).lote;
       var expira22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).expira;
       var id22 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIndicadorQuimico).id;
+
+      var descripcion24 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIB).descripcion;
+      var lote24 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIB).lote;
+      var expira24 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIB).expira;
+      var id24 = this.listaLotes.find(x => x.id == ultimoCertificado.idLoteIB).id;
     }
 
     this.formularioCertificado.patchValue({ resultado_21 : "C"
@@ -479,10 +495,18 @@ export class CertificadoComponent implements OnInit {
                                             ,descripcion_22: descripcion22
                                             ,lote_22: lote22
                                             ,expira_22: expira22
+                                            ,descripcion_24: descripcion24
+                                            ,lote_24: lote24
+                                            ,expira_24: expira24
                                             ,loteId_21: id21
                                             ,loteId_22: id22
+                                            ,loteId_24: id24
                                             ,tiempoAireacion: 4
-                                            ,tiempoExposicion: 12});
+                                            ,tiempoExposicion: 12
+                                            ,metodoEsterilizacion: "EXPOSICIÓN AL ÓXIDO DE ETILENO (ETO) A BAJA TEMPERATURA"
+                                            ,producto: "Material Médico Diverso"
+                                            ,modelo_23: "GAXT-E-DL"
+                                            ,codigo_23: "DE-003"});
     this.modalCertificado =
     this.modalService.open(modal, {
       centered: true,
