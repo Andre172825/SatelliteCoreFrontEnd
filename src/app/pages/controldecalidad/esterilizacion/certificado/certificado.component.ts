@@ -121,7 +121,7 @@ export class CertificadoComponent implements OnInit {
 
     this.formularioLote =  this._fb.group({
       descripcion: ['', Validators.required],
-      identificador: ['']
+      identificador: [0]
     })
 
     this.formularioLoteDetalle = this._fb.group({
@@ -268,10 +268,10 @@ export class CertificadoComponent implements OnInit {
       ConformeIB: this.formularioCertificado.get('conclusion_24').value == "C" ? true : false
     };
     this._esterilizacionService.RegistrarCertificado(body).subscribe(resp =>{
-
+      this.modalCertificado.close();
+      this.filtrarCertificados();
     });
-    this.modalCertificado.close();
-    this.filtrarCertificados();
+    
       //}
   }
 
@@ -286,7 +286,9 @@ export class CertificadoComponent implements OnInit {
     this._esterilizacionService.ListarCertificados(body).subscribe( resp => {
       this.listaCertificados = resp['contenido']
       this.paginador = resp['paginado'];
+      console.log(this.listaCertificados);
     });
+    
   }
   GenerarReporte(id){
     const body = {
@@ -412,9 +414,10 @@ export class CertificadoComponent implements OnInit {
     }
 
     this._esterilizacionService.RegistrarLote(body).subscribe( resp => {
+      this.CerrarDetalle();
+      this.FiltrarLotes();
     });
-    this.CerrarDetalle();
-    this.FiltrarLotes();
+    
   }
 
   CerrarDetalle(){
@@ -423,7 +426,6 @@ export class CertificadoComponent implements OnInit {
 
   ObtenerLote(modal: NgbModal, lote){
     var identificador = this.formularioLote.get('identificador').value;
-    console.log(identificador);
     if(identificador == 1){
       this.formularioCertificado.patchValue({descripcion_21 : lote.descripcion
         ,lote_21 : lote.lote
@@ -448,10 +450,10 @@ export class CertificadoComponent implements OnInit {
   }
 
   abrirModal(modal: NgbModal, usuario: CertificadoData | null){
-    
-
     this.formularioCertificado.reset();
-    var ultimoCertificado = this.listaCertificados.pop();
+    var ultimoCertificado = this.listaCertificados[this.listaCertificados.length - 1];
+    console.log(ultimoCertificado.idLoteCintaTestigo);
+    
 
     if(ultimoCertificado == null || ultimoCertificado == undefined){
       var descripcion21 = "";
