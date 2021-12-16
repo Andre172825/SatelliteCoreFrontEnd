@@ -369,7 +369,8 @@ export class CertificadoComponent implements OnInit {
     if(e.value == "op2"){
       this.formularioCertificado.patchValue({ tiempoAireacion : 8
                                               ,tiempoExposicion : 240
-                                              ,temperaturaProceso: "52 °C ± 6 °C" })
+                                              ,temperaturaProceso: "52 °C ± 6 °C"
+                                              ,hrProceso: 55})
 
       var tiempoAireacion = (<HTMLInputElement>document.getElementById("tiempoAireacion"));
       var taUnidadMedida = (<HTMLSelectElement>document.getElementById("taUnidadMedida"));
